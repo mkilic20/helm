@@ -1,0 +1,76 @@
+replicaCount: 1
+
+image:
+  repository: 2048-game
+  tag: latest
+  pullPolicy: Never
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources: {}
+
+game:
+  name: "2048-game"
+  port: 80
+  api:
+    port: 3000
+    host: "localhost"
+
+mysql:
+  enabled: true
+  architecture: standalone
+  fullnameOverride: "mysql"
+  auth:
+    rootPassword: "rootpass123"
+    database: "game2048"
+    username: "2048user"
+    password: "2048password"
+    createDatabase: true
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi
+    startupProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 30
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - |
+            mysqladmin status -uroot -p"${MYSQL_ROOT_PASSWORD}"
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 120
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - |
+            mysqladmin status -uroot -p"${MYSQL_ROOT_PASSWORD}"
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - |
+            mysqladmin status -uroot -p"${MYSQL_ROOT_PASSWORD}"
+  service:
+    port: 3306
+  initdbScriptsConfigMap: "{{ .Release.Name }}-mysql-init"

@@ -1,0 +1,45 @@
+# Helm chart dependencies
+charts/*.tgz
+
+# Generated files
+*.lock
+.helm
+requirements.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Helm package files
+*.tgz
+**/*.tgz
+
+# Values files that might contain sensitive data
+*values.*.yaml
+!values.yaml
+
+# Helm dependency cache
+.helm/dependency-cache/
+
+# Helm test output
+__snapshot__/
+_test-output/
+
+# Local development overrides
+values.local.yaml
+values.dev.yaml
+
+# Temporary files
+*.tmp
+*~ 

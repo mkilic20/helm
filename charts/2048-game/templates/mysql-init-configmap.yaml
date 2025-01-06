@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-mysql-init
+  labels:
+    app: 2048-game
+    release: {{ .Release.Name }}
+data:
+  init.sql: |
+    {{- .Files.Get "sql/init.sql" | nindent 4 }} 

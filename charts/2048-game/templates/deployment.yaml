@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-game
+  labels:
+    app: 2048-game
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: 2048-game
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: 2048-game
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: 2048-game
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 85
+              protocol: TCP
+            - name: api
+              containerPort: {{ .Values.game.api.port }}
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-game-secret
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
